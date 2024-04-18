@@ -4,6 +4,7 @@ import lombok.Data;
 import ru.practicum.shareit.request.ItemRequest;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
@@ -14,15 +15,21 @@ import javax.validation.constraints.Size;
 public class Item {
     protected int id;
     @NotBlank
-    @Size(min = 1, max = 100)
+    @Size(min = 2, max = 100)
     protected String name;
     @NotBlank
-    @Size(min = 1, max = 500)
+    @Size(min = 2, max = 500)
     protected String description;
-    @NotBlank
+    @NotNull
     protected Boolean available;
     @Positive
     protected int owner;
     protected ItemRequest request;
 
+    public Item(int id, String name, String description, Boolean available) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+    }
 }
