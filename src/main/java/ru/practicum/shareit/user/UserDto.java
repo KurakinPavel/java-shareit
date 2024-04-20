@@ -5,15 +5,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class UserDto {
     protected Integer id;
-    // Тесты сформированы так, что в случае обновления "на входе" в любом поле может быть null значение.
-    // Соответствующую аннотацию использовать не могу.
+    @NotNull
+    @NotBlank
     protected String name;
+    @NotNull
+    @NotBlank
     @Email
     protected String email;
 }

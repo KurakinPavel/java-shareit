@@ -4,14 +4,14 @@ import java.util.List;
 
 public interface ItemStorage {
 
-    Item add(int ownerId, ItemDto itemDto);
+    Item add(int ownerId, Item item);
 
     Item update(int ownerId, int itemId, ItemDto itemDto);
 
-    ItemDto getItemDto(int itemId);
+    Item getItem(int itemId);
 
     List<Item> getItemsOfOwner(int ownerId);
 
-    List<ItemDto> getItemsForRent(String text);
+    List<Item> getItemsForRent(String text);
 
 }

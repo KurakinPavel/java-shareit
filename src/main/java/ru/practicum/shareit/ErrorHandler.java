@@ -16,28 +16,28 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNullPointerException(final NullPointerException e) {
-        log.info(e.getMessage());
-        return new ErrorResponse(e.getMessage(), e);
+        log.info(e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-        log.info(e.getMessage());
+        log.info("ошибка валидации", e);
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNoSuchElementException(final NoSuchElementException e) {
-        log.info(e.getMessage());
-        return new ErrorResponse(e.getMessage(), e);
+        log.info(e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleThrowable(final Throwable e) {
-        log.info(e.getMessage());
-        return new ErrorResponse("ошибка приложения", e);
+    public ErrorResponse handleThrowable(final Exception e) {
+        log.info("ошибка приложения", e);
+        return new ErrorResponse(e.getMessage());
     }
 }

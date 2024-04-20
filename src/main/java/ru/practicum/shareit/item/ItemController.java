@@ -3,7 +3,6 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -13,25 +12,25 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public Item add(@RequestHeader("X-Sharer-User-Id") @Positive Integer ownerId,
+    public ItemDto add(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
                     @RequestBody ItemDto itemDto) throws NoSuchFieldException {
         return itemService.add(ownerId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public Item update(@RequestHeader("X-Sharer-User-Id") @Positive Integer ownerId,
+    public ItemDto update(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
                        @PathVariable Integer itemId,
                        @RequestBody ItemDto itemDto) {
         return itemService.update(ownerId, itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemDto(@PathVariable Integer itemId) {
-        return itemService.getItemDto(itemId);
+    public ItemDto getItem(@PathVariable Integer itemId) {
+        return itemService.getItem(itemId);
     }
 
     @GetMapping
-    public List<Item> getItemsOfOwner(@RequestHeader("X-Sharer-User-Id") @Positive Integer ownerId) {
+    public List<ItemDto> getItemsOfOwner(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
         return itemService.getItemsOfOwner(ownerId);
     }
 

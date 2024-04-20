@@ -29,7 +29,6 @@ public class UserService {
     }
 
     public UserDto update(int userId, UserDto userDto) {
-
         return UserMapper.toUserDto(userStorage.update(userId, UserMapper.toUser(userDto)));
     }
 
