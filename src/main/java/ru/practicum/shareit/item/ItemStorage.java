@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ItemStorage {
 
-    Item add(int ownerId, ItemDto itemDto) throws NoSuchFieldException;
+    Item add(int ownerId, ItemDto itemDto);
 
     Item update(int ownerId, int itemId, ItemDto itemDto);
 

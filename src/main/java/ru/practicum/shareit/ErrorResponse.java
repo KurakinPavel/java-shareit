@@ -5,10 +5,14 @@ import lombok.Getter;
 @Getter
 public class ErrorResponse {
     private final String error;
-    private final Throwable throwable;
+    private Throwable throwable;
 
     public ErrorResponse(String error, Throwable throwable) {
         this.error = error;
         this.throwable = throwable;
+    }
+
+    public ErrorResponse(String error) {
+        this.error = error;
     }
 }

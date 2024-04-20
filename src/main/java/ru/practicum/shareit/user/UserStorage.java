@@ -10,7 +10,7 @@ public interface UserStorage {
 
     User create(User user);
 
-    User update(int userId, UserDto userDto);
+    User update(int userId, User user);
 
     Map<String, String> remove(int userId);
 

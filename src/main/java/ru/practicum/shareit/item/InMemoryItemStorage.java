@@ -1,8 +1,10 @@
 package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.yaml.snakeyaml.parser.ParserException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserStorage;
 
@@ -61,11 +63,11 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public Item add(int ownerId, ItemDto itemDto) throws NoSuchFieldException {
+    public Item add(int ownerId, ItemDto itemDto) {
         User owner = userStorage.getUser(ownerId);
         if ((itemDto.getName() == null) || (itemDto.getName().isBlank()) || itemDto.getDescription() == null
                 || itemDto.getDescription().isBlank() || itemDto.getAvailable() == null)
-            throw new NoSuchFieldException("Переданы некорректные данные для создания item");
+            throw new ExceptionInInitializerError("Переданы некорректные данные для создания item");
         Item item = new Item(
                 ++numerator,
                 itemDto.getName(),

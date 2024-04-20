@@ -42,20 +42,20 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User update(int userId, UserDto userDto) {
+    public User update(int userId, User user) {
         User updatingUser = getUser(userId);
         String updatingEmail = updatingUser.getEmail();
-        if (userEmails.containsKey(userDto.getEmail()) && userEmails.get(userDto.getEmail()) != userId)
+        if (userEmails.containsKey(user.getEmail()) && userEmails.get(user.getEmail()) != userId)
             throw new IllegalArgumentException("Пользователь с аналогичным email " +
-                userDto.getEmail() + " уже существует. Обновление отклонено.");
-        if (userDto.getEmail() != null) {
+                user.getEmail() + " уже существует. Обновление отклонено.");
+        if (user.getEmail() != null && !(user.getEmail().isBlank())) {
             userEmails.remove(updatingEmail);
-            updatingUser.setEmail(userDto.getEmail());
-            userEmails.put(userDto.getEmail(), userId);
+            updatingUser.setEmail(user.getEmail());
+            userEmails.put(user.getEmail(), userId);
             log.info("Обновлен email пользователя с id {}", userId);
         }
-        if (userDto.getName() != null) {
-            updatingUser.setName(userDto.getName());
+        if (user.getName() != null && !(user.getName().isBlank())) {
+            updatingUser.setName(user.getName());
             log.info("Обновлено name пользователя с id {}", userId);
         }
         users.put(userId, updatingUser);
@@ -64,8 +64,9 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public Map<String, String> remove(int userId) {
-        User removingUser = getUser(userId);
-        users.remove(userId);
+        User removingUser = users.remove(userId);
+        if (removingUser == null) throw new NoSuchElementException("Пользователь с id " + userId + " не найден. " +
+                "Удаление отклонено.");
         userEmails.remove(removingUser.getEmail());
         log.info("Удалён пользователь с id {}", userId);
         return Map.of("result", "Удалён пользователь с id " + userId);

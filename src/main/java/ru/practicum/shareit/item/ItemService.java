@@ -12,7 +12,7 @@ import java.util.List;
 public class ItemService {
     private final ItemStorage itemStorage;
 
-    public Item add(int ownerId, ItemDto itemDto) throws NoSuchFieldException {
+    public Item add(int ownerId, ItemDto itemDto) {
         return itemStorage.add(ownerId, itemDto);
     }
 

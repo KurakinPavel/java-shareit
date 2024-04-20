@@ -15,23 +15,16 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+    public ErrorResponse handleNullPointerException(final NullPointerException e) {
         log.info(e.getMessage());
-        return new ErrorResponse("ошибка валидации", e);
+        return new ErrorResponse(e.getMessage(), e);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNoSuchFieldException(final NoSuchFieldException e) {
+    public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         log.info(e.getMessage());
-        return new ErrorResponse(e.getMessage(), e);
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleIllegalArgumentException(final IllegalArgumentException e) {
-        log.info(e.getMessage());
-        return new ErrorResponse(e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
