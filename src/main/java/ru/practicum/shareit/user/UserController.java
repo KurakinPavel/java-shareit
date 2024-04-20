@@ -7,9 +7,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping(path = "/users")
 @AllArgsConstructor

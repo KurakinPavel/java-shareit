@@ -39,9 +39,10 @@ public class InMemoryItemStorage implements ItemStorage {
     public List<ItemDto> getItemsForRent(String text) {
         List<ItemDto> itemsForRent = new ArrayList<>();
         if (text.isEmpty()) return new ArrayList<>();
+        String textInLowercase = text.toLowerCase();
         for (Item item : findAll()) {
-            if ((item.getName().toLowerCase().contains(text.toLowerCase()) ||
-                    item.getDescription().toLowerCase().contains(text.toLowerCase())) && item.getAvailable()) {
+            if ((item.getName().toLowerCase().contains(textInLowercase) ||
+                    item.getDescription().toLowerCase().contains(textInLowercase)) && item.getAvailable()) {
                 itemsForRent.add(ItemMapper.toItemDto(item));
             }
         }

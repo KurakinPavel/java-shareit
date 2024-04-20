@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.request.ItemRequest;
 
 import javax.validation.constraints.NotBlank;
@@ -8,10 +9,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
-/**
- * TODO Sprint add-controllers.
- */
-@Data
+@Getter
+@Setter
 public class Item {
     protected int id;
     @NotBlank

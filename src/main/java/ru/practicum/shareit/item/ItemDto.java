@@ -1,12 +1,11 @@
 package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * TODO Sprint add-controllers.
- */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class ItemDto {
     protected int id;
