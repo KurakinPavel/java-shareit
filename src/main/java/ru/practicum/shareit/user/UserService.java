@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.UserValidationException;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class UserService {
     public UserDto create(UserDto userDto) {
         if ((userDto.getName() == null) || (userDto.getName().isBlank()) || userDto.getEmail() == null
                 || userDto.getEmail().isBlank())
-            throw new NullPointerException("Переданы некорректные данные для создания user");
+            throw new UserValidationException("Переданы некорректные данные для создания user");
         return UserMapper.toUserDto(userStorage.create(UserMapper.toUser(userDto)));
     }
 

@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.User;
 
 @Getter
 @Setter
@@ -11,7 +12,7 @@ public class Item {
     protected String name;
     protected String description;
     protected Boolean available;
-    protected int owner;
+    protected User owner;
     protected ItemRequest request;
 
     public Item(int id, String name, String description, Boolean available) {

@@ -16,15 +16,11 @@ public class InMemoryItemStorage implements ItemStorage {
         items = new HashMap<>();
     }
 
-    private List<Item> findAll() {
-        return new ArrayList<>(items.values());
-    }
-
     @Override
     public List<Item> getItemsOfOwner(int ownerId) {
         List<Item> itemsOfOwner = new ArrayList<>();
-        for (Item item : findAll()) {
-            if (item.getOwner() == ownerId) itemsOfOwner.add(item);
+        for (Item item : items.values()) {
+            if (item.getOwner().getId() == ownerId) itemsOfOwner.add(item);
         }
         return itemsOfOwner;
     }
@@ -34,7 +30,7 @@ public class InMemoryItemStorage implements ItemStorage {
         List<Item> itemsForRent = new ArrayList<>();
         if (text.isEmpty()) return new ArrayList<>();
         String textInLowercase = text.toLowerCase();
-        for (Item item : findAll()) {
+        for (Item item : items.values()) {
             if ((item.getName().toLowerCase().contains(textInLowercase) ||
                     item.getDescription().toLowerCase().contains(textInLowercase)) && item.getAvailable()) {
                 itemsForRent.add(item);
@@ -51,31 +47,14 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public Item add(int ownerId, Item item) {
+    public Item add(Item item) {
         item.setId(++numerator);
-        item.setOwner(ownerId);
         items.put(numerator, item);
         return getItem(numerator);
     }
 
     @Override
-    public Item update(int ownerId, int itemId, ItemDto itemDto) {
-        Item updatingItem = getItem(itemId);
-        if (updatingItem.getOwner() != ownerId)
-            throw new NoSuchElementException("Редактировать данные item может только владелец");
-        if (!(itemDto.getName() == null || itemDto.getName().isBlank())) {
-            updatingItem.setName(itemDto.getName());
-            log.info("Обновлено поле name item с id {}", itemId);
-        }
-        if (!(itemDto.getDescription() == null || itemDto.getDescription().isBlank())) {
-            updatingItem.setDescription(itemDto.getDescription());
-            log.info("Обновлено поле description item с id {}", itemId);
-        }
-        if (!(itemDto.getAvailable() == null)) {
-            updatingItem.setAvailable(itemDto.getAvailable());
-            log.info("Обновлено поле available item с id {}", itemId);
-        }
-        items.put(itemId, updatingItem);
-        return getItem(itemId);
+    public void update(Item item) {
+        items.put(item.getId(), item);
     }
 }

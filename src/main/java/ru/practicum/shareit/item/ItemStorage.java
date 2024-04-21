@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface ItemStorage {
 
-    Item add(int ownerId, Item item);
+    Item add(Item item);
 
-    Item update(int ownerId, int itemId, ItemDto itemDto);
+    void update(Item item);
 
     Item getItem(int itemId);
 

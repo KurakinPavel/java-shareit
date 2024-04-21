@@ -15,7 +15,14 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNullPointerException(final NullPointerException e) {
+    public ErrorResponse handleItemValidationException(final ItemValidationException e) {
+        log.info(e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleUserValidationException(final UserValidationException e) {
         log.info(e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }

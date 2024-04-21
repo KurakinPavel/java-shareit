@@ -13,7 +13,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto add(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
-                    @RequestBody ItemDto itemDto) throws NoSuchFieldException {
+                    @RequestBody ItemDto itemDto) {
         return itemService.add(ownerId, itemDto);
     }
 
