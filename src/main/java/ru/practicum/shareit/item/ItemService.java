@@ -19,7 +19,7 @@ public class ItemService {
     private final UserStorage userStorage;
 
     public ItemDto add(int ownerId, ItemDto itemDto) {
-        User owner = userStorage.getUser(ownerId);
+        User owner = userStorage.getUserById(ownerId);
         if ((itemDto.getName() == null) || (itemDto.getName().isBlank()) || itemDto.getDescription() == null
                 || itemDto.getDescription().isBlank() || itemDto.getAvailable() == null)
             throw new ItemValidationException("Переданы некорректные данные для создания item");

@@ -6,11 +6,13 @@ import java.util.Map;
 public interface UserStorage {
     List<User> findAll();
 
-    User getUser(int id);
+    User getUserById(int id);
+
+    User getUserByEmail(String email);
 
     User create(User user);
 
-    User update(int userId, User user);
+    void update(String email, User user);
 
     Map<String, String> remove(int userId);
 

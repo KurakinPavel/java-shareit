@@ -41,7 +41,8 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Item getItem(int id) {
-        if (items.containsKey(id)) return items.get(id);
+        Item item = items.get(id);
+        if (item != null) return item;
         log.info("Item с идентификатором {} не найден.", id);
         throw new NoSuchElementException("Item с id " + id + " не найден.");
     }

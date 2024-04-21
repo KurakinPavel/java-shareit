@@ -26,15 +26,34 @@ public class UserService {
         if ((userDto.getName() == null) || (userDto.getName().isBlank()) || userDto.getEmail() == null
                 || userDto.getEmail().isBlank())
             throw new UserValidationException("Переданы некорректные данные для создания user");
+        User userByEmail = userStorage.getUserByEmail(userDto.getEmail());
+        if (userByEmail != null) throw new IllegalArgumentException("Пользователь с email " +
+                userDto.getEmail() + " уже существует. Добавление отклонено.");
         return UserMapper.toUserDto(userStorage.create(UserMapper.toUser(userDto)));
     }
 
     public UserDto update(int userId, UserDto userDto) {
-        return UserMapper.toUserDto(userStorage.update(userId, UserMapper.toUser(userDto)));
+        User updatingUser = userStorage.getUserById(userId);
+        User userByEmail = userStorage.getUserByEmail(userDto.getEmail());
+        if (userByEmail != null && !updatingUser.equals(userByEmail)) {
+            throw new IllegalArgumentException("Пользователь с аналогичным email " +
+                    userByEmail.getEmail() + " уже существует. Обновление отклонено.");
+        }
+        String updatingEmail = updatingUser.getEmail();
+        if (userDto.getEmail() != null && !(userDto.getEmail().isBlank())) {
+            updatingUser.setEmail(userDto.getEmail());
+            log.info("Обновлено поле email user с id {}", userId);
+        }
+        if (userDto.getName() != null && !(userDto.getName().isBlank())) {
+            updatingUser.setName(userDto.getName());
+            log.info("Обновлено поле name user с id {}", userId);
+        }
+        userStorage.update(updatingEmail, updatingUser);
+        return UserMapper.toUserDto(updatingUser);
     }
 
-    public UserDto getUser(int id) {
-        return UserMapper.toUserDto(userStorage.getUser(id));
+    public UserDto getUserById(int id) {
+        return UserMapper.toUserDto(userStorage.getUserById(id));
     }
 
     public Map<String, String> remove(int userId) {
