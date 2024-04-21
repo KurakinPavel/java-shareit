@@ -15,10 +15,11 @@ public class Item {
     protected User owner;
     protected ItemRequest request;
 
-    public Item(int id, String name, String description, Boolean available) {
+    public Item(int id, String name, String description, Boolean available, User owner) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
+        this.owner = owner;
     }
 }

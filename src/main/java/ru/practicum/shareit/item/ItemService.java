@@ -23,8 +23,7 @@ public class ItemService {
         if ((itemDto.getName() == null) || (itemDto.getName().isBlank()) || itemDto.getDescription() == null
                 || itemDto.getDescription().isBlank() || itemDto.getAvailable() == null)
             throw new ItemValidationException("Переданы некорректные данные для создания item");
-        Item item = ItemMapper.toItem(itemDto);
-        item.setOwner(owner);
+        Item item = ItemMapper.toItem(itemDto, owner);
         return ItemMapper.toItemDto(itemStorage.add(item));
     }
 
