@@ -4,14 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "USERS", schema = "PUBLIC")
 @Getter
 @Setter
 @AllArgsConstructor
 public class User {
+     @Id
+     @Column(name = "USER_ID", nullable = false)
+     @GeneratedValue(strategy = GenerationType.IDENTITY)
      protected int id;
+     @Column(name = "NAME", nullable = false)
      protected String name;
+     @Column(name = "EMAIL", nullable = false)
      protected String email;
 
      @Override
