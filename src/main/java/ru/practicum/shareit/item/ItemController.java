@@ -11,11 +11,11 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
-    @PostMapping
-    public ItemDto add(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
-                    @RequestBody ItemDto itemDto) {
-        return itemService.add(ownerId, itemDto);
-    }
+//    @PostMapping
+//    public ItemDto add(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
+//                    @RequestBody ItemDto itemDto) {
+//        return itemService.add(ownerId, itemDto);
+//    }
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@RequestHeader("X-Sharer-User-Id") Integer ownerId,

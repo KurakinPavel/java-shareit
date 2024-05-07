@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -19,8 +18,8 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto create(@Valid @RequestBody UserDto userDto) {
-        return userService.create(userDto);
+    public UserDto save(@Valid @RequestBody UserDto userDto) {
+        return userService.save(userDto);
     }
 
     @PatchMapping("/{userId}")
@@ -35,7 +34,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public Map<String, String> remove(@PathVariable Integer userId) {
-        return userService.remove(userId);
+    public void remove(@PathVariable Integer userId) {
+        userService.remove(userId);
     }
 }

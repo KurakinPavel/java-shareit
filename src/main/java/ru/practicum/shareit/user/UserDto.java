@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +9,6 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class UserDto {
     protected Integer id;
     @NotNull
@@ -20,4 +18,10 @@ public class UserDto {
     @NotBlank
     @Email
     protected String email;
+
+    public UserDto(Integer id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
 }

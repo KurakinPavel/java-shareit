@@ -3,9 +3,6 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.ItemValidationException;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserStorage;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -16,16 +13,16 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemService {
     private final ItemStorage itemStorage;
-    private final UserStorage userStorage;
+    //private final UserRepository userStorage;
 
-    public ItemDto add(int ownerId, ItemDto itemDto) {
-        User owner = userStorage.getUserById(ownerId);
-        if ((itemDto.getName() == null) || (itemDto.getName().isBlank()) || itemDto.getDescription() == null
-                || itemDto.getDescription().isBlank() || itemDto.getAvailable() == null)
-            throw new ItemValidationException("Переданы некорректные данные для создания item");
-        Item item = ItemMapper.toItem(itemDto, owner);
-        return ItemMapper.toItemDto(itemStorage.add(item));
-    }
+//    public ItemDto add(int ownerId, ItemDto itemDto) {
+//        User owner = userStorage.getUserById(ownerId);
+//        if ((itemDto.getName() == null) || (itemDto.getName().isBlank()) || itemDto.getDescription() == null
+//                || itemDto.getDescription().isBlank() || itemDto.getAvailable() == null)
+//            throw new ItemValidationException("Переданы некорректные данные для создания item");
+//        Item item = ItemMapper.toItem(itemDto, owner);
+//        return ItemMapper.toItemDto(itemStorage.add(item));
+//    }
 
     public ItemDto update(int ownerId, int itemId, ItemDto itemDto) {
         Item updatingItem = itemStorage.getItem(itemId);
