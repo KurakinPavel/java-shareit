@@ -1,9 +1,9 @@
 package ru.practicum.shareit.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
@@ -24,12 +24,10 @@ public class Item {
     @Column(name = "AVAILABLE", nullable = false)
     @Type(type = "org.hibernate.type.NumericBooleanType")
     protected Boolean available;
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JoinColumn(name = "OWNER_ID")
     protected User owner;
-    @ManyToOne
-    @JoinColumn(name = "REQUEST_ID")
-    protected ItemRequest request;
 
     public Item(int id, String name, String description, Boolean available, User owner) {
         this.id = id;
@@ -37,5 +35,15 @@ public class Item {
         this.description = description;
         this.available = available;
         this.owner = owner;
+    }
+
+    public Item(String name, String description, Boolean available, User owner) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.owner = owner;
+    }
+
+    public Item() {
     }
 }
