@@ -47,8 +47,7 @@ public class ItemService {
         if (!(itemDto.getAvailable() == null)) {
             updatingItem.setAvailable(itemDto.getAvailable());
         }
-        itemStorage.save(updatingItem);
-        return ItemMapper.toItemDto(itemStorage.getReferenceById(updatingItem.getId()));
+        return ItemMapper.toItemDto(itemStorage.save(updatingItem));
     }
 
     public ItemDto getItem(int itemId) {
