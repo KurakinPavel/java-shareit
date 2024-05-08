@@ -10,6 +10,12 @@ public class UserMapper {
         );
     }
 
+    public static UserDtoForBookingOut toUserDtoForBookingOut(User user) {
+        return new UserDtoForBookingOut(
+                user.getId()
+        );
+    }
+
     public static User toUser(UserDto userDto) {
         return new User(
                 userDto.getId() != null ? userDto.getId() : 0,

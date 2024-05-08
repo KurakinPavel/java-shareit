@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.BookingValidationException;
-import ru.practicum.shareit.exceptions.ItemValidationException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
@@ -21,9 +20,9 @@ public class BookingService {
     private final UserRepository userStorage;
     private final ItemRepository itemStorage;
 
-    public Booking add(int bookerId, BookingDto bookingDto) {
-        if (bookingDto.getStart() == null || bookingDto.getEnd() == null || bookingDto.getStart().isAfter(bookingDto.getEnd())
-                || bookingDto.getStart().equals(bookingDto.getEnd()))
+    public BookingDtoForOut add(int bookerId, BookingDtoForIn bookingDtoForIn) {
+        if (bookingDtoForIn.getStart() == null || bookingDtoForIn.getEnd() == null || bookingDtoForIn.getStart().isAfter(bookingDtoForIn.getEnd())
+                || bookingDtoForIn.getStart().equals(bookingDtoForIn.getEnd()))
             throw new BookingValidationException("Переданы некорректные данные для создания бронирования");
         User booker = userStorage.getReferenceById(bookerId);
         try {
@@ -31,14 +30,14 @@ public class BookingService {
         } catch (EntityNotFoundException e) {
             throw new NoSuchElementException("Пользователь с id " + bookerId + " не найден.");
         }
-        Item item = itemStorage.getReferenceById(bookingDto.getItemId());
+        Item item = itemStorage.getReferenceById(bookingDtoForIn.getItemId());
         try {
             Boolean available = item.getAvailable();
         } catch (EntityNotFoundException e) {
-            throw new NoSuchElementException("Item с id " + bookingDto.getItemId() + " не найден.");
+            throw new NoSuchElementException("Item с id " + bookingDtoForIn.getItemId() + " не найден.");
         }
         if (!item.getAvailable()) throw new BookingValidationException("Переданы некорректные данные для создания бронирования");
-        Booking booking = BookingMapper.toBooking(bookingDto, booker, item);
-        return bookingStorage.save(booking);
+        Booking booking = BookingMapper.toBooking(bookingDtoForIn, booker, item);
+        return BookingMapper.toBookingDtoForOut(bookingStorage.save(booking));
     }
 }

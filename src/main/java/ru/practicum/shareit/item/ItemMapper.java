@@ -13,6 +13,13 @@ public class ItemMapper {
         );
     }
 
+    public static ItemDtoForBookingOut toItemDtoForBookingOut(Item item) {
+        return new ItemDtoForBookingOut(
+                item.getId(),
+                item.getName()
+        );
+    }
+
     public static Item toItem(ItemDto itemDto, User owner) {
         return new Item(
                 itemDto.getId() != null ? itemDto.getId() : 0,
