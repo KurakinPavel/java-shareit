@@ -83,29 +83,22 @@ public class ItemService {
                     LocalDateTime.now());
             if (!lastBooking.isEmpty()) {
                 bookings.add(lastBooking.get(0));
-            }
+            } else return ItemMapper.toItemDtoWithBookingInformation(item, null, null, comments);
             List<Booking> nextBooking = bookingStorage.findFirst1ByItemIdAndStartIsAfterOrderByStartAsc(item.getId(),
                     LocalDateTime.now());
             if (!nextBooking.isEmpty()) {
                 bookings.add(nextBooking.get(0));
             }
-            if (bookings.isEmpty()) {
-                return ItemMapper.toItemDtoWithBookingInformation(item, null, null, comments);
-            } else if (bookings.size() == 1) {
-                List<BookingDtoForItemInformation> bookingsForItemInformation =
-                        bookings
-                                .stream()
-                                .map(BookingMapper::toBookingDtoForItemInformation)
-                                .collect(Collectors.toList());
+            List<BookingDtoForItemInformation> bookingsForItemInformation =
+                    bookings
+                            .stream()
+                            .map(BookingMapper::toBookingDtoForItemInformation)
+                            .collect(Collectors.toList());
+            if (bookings.size() == 1) {
                 return ItemMapper.toItemDtoWithBookingInformation(item,
-                                bookingsForItemInformation.get(0), bookingsForItemInformation.get(0), comments);
+                                bookingsForItemInformation.get(0), null, comments);
             } else {
-                List<BookingDtoForItemInformation> bookingsForItemInformation =
-                        bookings
-                                .stream()
-                                .map(BookingMapper::toBookingDtoForItemInformation)
-                                .collect(Collectors.toList());
-               return ItemMapper.toItemDtoWithBookingInformation(item,
+                return ItemMapper.toItemDtoWithBookingInformation(item,
                                 bookingsForItemInformation.get(0), bookingsForItemInformation.get(1), comments);
             }
         }
