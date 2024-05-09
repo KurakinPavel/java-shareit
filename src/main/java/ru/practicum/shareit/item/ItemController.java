@@ -25,12 +25,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable Integer itemId) {
-        return itemService.getItem(itemId);
+    public ItemDtoWithBookingInformation getItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
+            @PathVariable Integer itemId) {
+        return itemService.getItem(userId, itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getItemsOfOwner(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
+    public List<ItemDtoWithBookingInformation> getItemsOfOwner(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
         return itemService.getItemsOfOwner(ownerId);
     }
 
