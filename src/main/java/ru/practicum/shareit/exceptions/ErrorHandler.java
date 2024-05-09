@@ -17,6 +17,13 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleCommentValidationException(final CommentValidationException e) {
+        log.info(e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleItemValidationException(final ItemValidationException e) {
         log.info(e.getMessage(), e);
         return new ErrorResponse(e.getMessage());

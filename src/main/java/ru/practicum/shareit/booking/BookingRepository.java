@@ -10,7 +10,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByBooker_IdAndEndIsBeforeOrderByStartDesc(int bookerId, LocalDateTime end);
 
-    List<Booking> findAllByBooker_IdAndEndIsAfterOrderByStartDesc(int bookerId, LocalDateTime end);
+    List<Booking> findAllByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(int bookerId, LocalDateTime start, LocalDateTime end);
 
     List<Booking> findAllByBooker_IdAndStartIsAfterOrderByStartDesc(int bookerId, LocalDateTime start);
 
@@ -18,9 +18,9 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByItem_Owner_IdOrderByStartDesc(int ownerId);
 
-    List<Booking> findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(int ownerId, LocalDateTime end);
+    List<Booking> findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(int ownerId, LocalDateTime start, LocalDateTime end);
 
-    List<Booking> findAllByItem_Owner_IdAndEndIsAfterOrderByStartDesc(int ownerId, LocalDateTime end);
+    List<Booking> findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(int ownerId, LocalDateTime end);
 
     List<Booking> findAllByItem_Owner_IdAndStartIsAfterOrderByStartDesc(int ownerId, LocalDateTime end);
 
@@ -29,5 +29,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findFirst1ByItemIdAndStartIsBeforeOrderByStartDesc(int itemId, LocalDateTime start);
 
     List<Booking> findFirst1ByItemIdAndStartIsAfterOrderByStartAsc(int itemId, LocalDateTime start);
+
+    List<Booking> findFirst1ByItemIdAndBookerIdAndEndIsBeforeOrderByEndDesc(int itemId, int userId, LocalDateTime end);
 
 }

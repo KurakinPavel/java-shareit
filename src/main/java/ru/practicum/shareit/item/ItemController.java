@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -15,6 +16,13 @@ public class ItemController {
     public ItemDto add(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
                     @RequestBody ItemDto itemDto) {
         return itemService.add(ownerId, itemDto);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDtoOut addComment(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                             @PathVariable Integer itemId,
+                             @Valid @RequestBody CommentDtoIn commentDtoIn) {
+        return itemService.addComment(userId, itemId, commentDtoIn);
     }
 
     @PatchMapping("/{itemId}")

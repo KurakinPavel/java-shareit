@@ -86,10 +86,10 @@ public class BookingService {
                 bookings = bookingStorage.findAllByBooker_IdOrderByStartDesc(userId);
                 break;
             case CURRENT:
-                bookings = bookingStorage.findAllByBooker_IdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                bookings = bookingStorage.findAllByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userId, LocalDateTime.now(), LocalDateTime.now());
                 break;
             case PAST:
-                bookings = bookingStorage.findAllByBooker_IdAndEndIsAfterOrderByStartDesc(userId, LocalDateTime.now());
+                bookings = bookingStorage.findAllByBooker_IdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now());
                 break;
             case FUTURE:
                 bookings = bookingStorage.findAllByBooker_IdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now());
@@ -121,10 +121,10 @@ public class BookingService {
                 bookings = bookingStorage.findAllByItem_Owner_IdOrderByStartDesc(ownerId);
                 break;
             case CURRENT:
-                bookings = bookingStorage.findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(ownerId, LocalDateTime.now());
+                bookings = bookingStorage.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(ownerId, LocalDateTime.now(), LocalDateTime.now());
                 break;
             case PAST:
-                bookings = bookingStorage.findAllByItem_Owner_IdAndEndIsAfterOrderByStartDesc(ownerId, LocalDateTime.now());
+                bookings = bookingStorage.findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(ownerId, LocalDateTime.now());
                 break;
             case FUTURE:
                 bookings = bookingStorage.findAllByItem_Owner_IdAndStartIsAfterOrderByStartDesc(ownerId, LocalDateTime.now());
