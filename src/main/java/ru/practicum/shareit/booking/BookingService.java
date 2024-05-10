@@ -3,6 +3,8 @@ package ru.practicum.shareit.booking;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dto.BookingDtoForIn;
+import ru.practicum.shareit.booking.dto.BookingDtoForOut;
 import ru.practicum.shareit.exceptions.BookingValidationException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
@@ -80,13 +82,14 @@ public class BookingService {
             throw new NoSuchElementException("Пользователь с id " + userId + " не найден.");
         }
         List<Booking> bookings;
-        if (!isPresent(state)) throw new IllegalArgumentException("Unknown state: " + state);
+        if (isPresent(state)) throw new IllegalArgumentException("Unknown state: " + state);
         switch (BookingState.valueOf(state)) {
             case ALL:
                 bookings = bookingStorage.findAllByBooker_IdOrderByStartDesc(userId);
                 break;
             case CURRENT:
-                bookings = bookingStorage.findAllByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userId, LocalDateTime.now(), LocalDateTime.now());
+                bookings = bookingStorage.findAllByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userId,
+                        LocalDateTime.now(), LocalDateTime.now());
                 break;
             case PAST:
                 bookings = bookingStorage.findAllByBooker_IdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now());
@@ -115,13 +118,14 @@ public class BookingService {
             throw new NoSuchElementException("Пользователь с id " + ownerId + " не найден.");
         }
         List<Booking> bookings;
-        if (!isPresent(state)) throw new IllegalArgumentException("Unknown state: " + state);
+        if (isPresent(state)) throw new IllegalArgumentException("Unknown state: " + state);
         switch (BookingState.valueOf(state)) {
             case ALL:
                 bookings = bookingStorage.findAllByItem_Owner_IdOrderByStartDesc(ownerId);
                 break;
             case CURRENT:
-                bookings = bookingStorage.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(ownerId, LocalDateTime.now(), LocalDateTime.now());
+                bookings = bookingStorage.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(ownerId,
+                        LocalDateTime.now(), LocalDateTime.now());
                 break;
             case PAST:
                 bookings = bookingStorage.findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(ownerId, LocalDateTime.now());
@@ -145,10 +149,9 @@ public class BookingService {
     private static boolean isPresent(String data) {
         try {
             Enum.valueOf(BookingState.class, data);
-            return true;
-        } catch (IllegalArgumentException e) {
             return false;
+        } catch (IllegalArgumentException e) {
+            return true;
         }
     }
-
 }

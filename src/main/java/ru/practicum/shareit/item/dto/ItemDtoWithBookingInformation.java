@@ -1,9 +1,9 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.booking.BookingDtoForItemInformation;
+import ru.practicum.shareit.booking.Booking;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class ItemDtoWithBookingInformation {
     protected String name;
     protected String description;
     protected Boolean available;
-    protected BookingDtoForItemInformation lastBooking;
-    protected BookingDtoForItemInformation nextBooking;
+    protected Booking.BookingDtoForItemInformation lastBooking;
+    protected Booking.BookingDtoForItemInformation nextBooking;
     protected List<CommentDtoOut> comments;
 }

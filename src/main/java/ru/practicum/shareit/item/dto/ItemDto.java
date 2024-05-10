@@ -1,27 +1,29 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.item.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class UserDto {
+public class ItemDto {
     protected Integer id;
     @NotNull
     @NotBlank
     protected String name;
     @NotNull
     @NotBlank
-    @Email
-    protected String email;
+    protected String description;
+    @NotNull
+    @NotBlank
+    protected Boolean available;
 
-    public UserDto(Integer id, String name, String email) {
+    public ItemDto(Integer id, String name, String description, Boolean available) {
         this.id = id;
         this.name = name;
-        this.email = email;
+        this.description = description;
+        this.available = available;
     }
 }
