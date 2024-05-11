@@ -3,15 +3,16 @@ package ru.practicum.shareit.booking;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoForIn;
 import ru.practicum.shareit.booking.dto.BookingDtoForOut;
 import ru.practicum.shareit.exceptions.BookingValidationException;
 import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.UserService;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,36 +24,34 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class BookingService {
     private final BookingRepository bookingStorage;
-    private final UserRepository userStorage;
     private final ItemRepository itemStorage;
+    private final UserService userService;
 
     public BookingDtoForOut add(int bookerId, BookingDtoForIn bookingDtoForIn) {
         if (bookingDtoForIn.getStart() == null || bookingDtoForIn.getEnd() == null || bookingDtoForIn.getStart().isAfter(bookingDtoForIn.getEnd())
-                || bookingDtoForIn.getStart().equals(bookingDtoForIn.getEnd()))
+                || bookingDtoForIn.getStart().equals(bookingDtoForIn.getEnd())) {
             throw new BookingValidationException("Переданы некорректные данные для создания бронирования");
-        User booker = userStorage.getReferenceById(bookerId);
-        try {
-            String bookerEmail = booker.getEmail();
-        } catch (EntityNotFoundException e) {
-            throw new NoSuchElementException("Пользователь с id " + bookerId + " не найден.");
         }
-        Item item = itemStorage.getReferenceById(bookingDtoForIn.getItemId());
-        try {
-            Boolean available = item.getAvailable();
-        } catch (EntityNotFoundException e) {
-            throw new NoSuchElementException("Item с id " + bookingDtoForIn.getItemId() + " не найден.");
+        User booker = userService.getUserForInternalUse(bookerId);
+        Item item = getItemForInternalUse(bookingDtoForIn.getItemId());
+        if (item.getOwner().getId() == bookerId) {
+            throw new NoSuchElementException("Владелец не может бронировать свои вещи");
         }
-        if (item.getOwner().getId() == bookerId) throw new NoSuchElementException("Владелец не может бронировать свои вещи");
-        if (!item.getAvailable()) throw new BookingValidationException("Переданы некорректные данные для создания бронирования");
+        if (!item.getAvailable()) {
+            throw new BookingValidationException("Переданы некорректные данные для создания бронирования");
+        }
         Booking booking = BookingMapper.toBooking(bookingDtoForIn, booker, item);
         return BookingMapper.toBookingDtoForOut(bookingStorage.save(booking));
     }
 
     public BookingDtoForOut confirm(int ownerId, int bookingId, Boolean approved) {
         Booking booking = bookingStorage.getReferenceById(bookingId);
-        if (booking.getItem().getOwner().getId() != ownerId)
+        if (booking.getItem().getOwner().getId() != ownerId) {
             throw new NoSuchElementException("Подтверждать бронирование может только владелец вещи");
-        if (booking.getStatus().equals(BookingStatus.APPROVED)) throw new BookingValidationException("Бронирование уже подтверждено");
+        }
+        if (booking.getStatus().equals(BookingStatus.APPROVED)) {
+            throw new BookingValidationException("Бронирование уже подтверждено");
+        }
         if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
         } else {
@@ -61,28 +60,23 @@ public class BookingService {
         return BookingMapper.toBookingDtoForOut(bookingStorage.save(booking));
     }
 
+    @Transactional(readOnly = true)
     public BookingDtoForOut getBooking(int userId, int bookingId) {
-        User booker = userStorage.getReferenceById(userId);
-        try {
-            String bookerEmail = booker.getEmail();
-        } catch (EntityNotFoundException e) {
-            throw new NoSuchElementException("Пользователь с id " + userId + " не найден.");
-        }
+        User user = userService.getUserForInternalUse(userId);
         Booking booking = bookingStorage.getReferenceById(bookingId);
-        if (!(booking.getItem().getOwner().getId() == userId || booking.getBooker().getId() == userId))
+        if (!(booking.getItem().getOwner().getId() == userId || booking.getBooker().getId() == userId)) {
             throw new NoSuchElementException("У пользователя нет ни вещей, ни бронирований");
+        }
         return BookingMapper.toBookingDtoForOut(booking);
     }
 
+    @Transactional(readOnly = true)
     public List<BookingDtoForOut> getBookings(int userId, String state) {
-        User booker = userStorage.getReferenceById(userId);
-        try {
-            String bookerEmail = booker.getEmail();
-        } catch (EntityNotFoundException e) {
-            throw new NoSuchElementException("Пользователь с id " + userId + " не найден.");
-        }
+        User user = userService.getUserForInternalUse(userId);
         List<Booking> bookings;
-        if (isPresent(state)) throw new IllegalArgumentException("Unknown state: " + state);
+        if (isPresent(state)) {
+            throw new IllegalArgumentException("Unknown state: " + state);
+        }
         switch (BookingState.valueOf(state)) {
             case ALL:
                 bookings = bookingStorage.findAllByBooker_IdOrderByStartDesc(userId);
@@ -110,15 +104,13 @@ public class BookingService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<BookingDtoForOut> getBookingsOfOwnerItems(int ownerId, String state) {
-        User owner = userStorage.getReferenceById(ownerId);
-        try {
-            String bookerEmail = owner.getEmail();
-        } catch (EntityNotFoundException e) {
-            throw new NoSuchElementException("Пользователь с id " + ownerId + " не найден.");
-        }
+        User owner = userService.getUserForInternalUse(ownerId);
         List<Booking> bookings;
-        if (isPresent(state)) throw new IllegalArgumentException("Unknown state: " + state);
+        if (isPresent(state)) {
+            throw new IllegalArgumentException("Unknown state: " + state);
+        }
         switch (BookingState.valueOf(state)) {
             case ALL:
                 bookings = bookingStorage.findAllByItem_Owner_IdOrderByStartDesc(ownerId);
@@ -144,6 +136,24 @@ public class BookingService {
                 .stream()
                 .map(BookingMapper::toBookingDtoForOut)
                 .collect(Collectors.toList());
+    }
+
+    public List<Booking> getLastBookingByItemAndUser(int itemId, int userId) {
+        return bookingStorage.findFirst1ByItemIdAndBookerIdAndEndIsBeforeOrderByEndDesc(itemId, userId, LocalDateTime.now());
+    }
+
+    public List<Booking> getLastBookingByItem(int itemId) {
+        return bookingStorage.findFirst1ByItemIdAndStartIsBeforeOrderByStartDesc(itemId, LocalDateTime.now());
+    }
+
+    public List<Booking> getNextBookingByItem(int itemId) {
+        return bookingStorage.findFirst1ByItemIdAndStartIsAfterOrderByStartAsc(itemId, LocalDateTime.now());
+    }
+
+    private Item getItemForInternalUse(int id) {
+        Item item = itemStorage.getReferenceById(id);
+        ItemMapper.toItemDto(item);
+        return item;
     }
 
     private static boolean isPresent(String data) {

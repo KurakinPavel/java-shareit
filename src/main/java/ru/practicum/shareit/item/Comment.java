@@ -17,8 +17,8 @@ public class Comment {
     @Column(name = "COMMENT_ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
-    @Column(name = "TEXT", nullable = false)
-    protected String text;
+    @Column(name = "COMMENT", nullable = false)
+    protected String comment;
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "ITEM_ID")
@@ -30,16 +30,16 @@ public class Comment {
     @Column(name = "CREATED", nullable = false)
     protected LocalDateTime created;
 
-    public Comment(int id, String text, Item item, User author, LocalDateTime created) {
+    public Comment(int id, String comment, Item item, User author, LocalDateTime created) {
         this.id = id;
-        this.text = text;
+        this.comment = comment;
         this.item = item;
         this.author = author;
         this.created = created;
     }
 
-    public Comment(String text, Item item, User author, LocalDateTime created) {
-        this.text = text;
+    public Comment(String comment, Item item, User author, LocalDateTime created) {
+        this.comment = comment;
         this.item = item;
         this.author = author;
         this.created = created;

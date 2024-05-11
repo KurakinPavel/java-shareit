@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.item.Item;
@@ -53,15 +52,5 @@ public class Booking {
     }
 
     public Booking() {
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    public static class BookingDtoForItemInformation {
-        protected Integer id;
-        protected Integer bookerId;
-        protected LocalDateTime start;
-        protected LocalDateTime end;
     }
 }

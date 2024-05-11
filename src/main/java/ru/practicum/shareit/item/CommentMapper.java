@@ -19,7 +19,7 @@ public class CommentMapper {
     public static CommentDtoOut toCommentDtoOut(Comment comment) {
         return new CommentDtoOut(
                 comment.getId(),
-                comment.getText(),
+                comment.getComment(),
                 comment.getAuthor().getName(),
                 comment.getCreated()
         );
