@@ -27,6 +27,7 @@ public class BookingService {
     private final ItemRepository itemStorage;
     private final UserService userService;
 
+    @Transactional
     public BookingDtoForOut add(int bookerId, BookingDtoForIn bookingDtoForIn) {
         if (bookingDtoForIn.getStart() == null || bookingDtoForIn.getEnd() == null || bookingDtoForIn.getStart().isAfter(bookingDtoForIn.getEnd())
                 || bookingDtoForIn.getStart().equals(bookingDtoForIn.getEnd())) {
@@ -44,6 +45,7 @@ public class BookingService {
         return BookingMapper.toBookingDtoForOut(bookingStorage.save(booking));
     }
 
+    @Transactional
     public BookingDtoForOut confirm(int ownerId, int bookingId, Boolean approved) {
         Booking booking = bookingStorage.getReferenceById(bookingId);
         if (booking.getItem().getOwner().getId() != ownerId) {

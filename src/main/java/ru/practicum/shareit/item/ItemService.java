@@ -31,6 +31,7 @@ public class ItemService {
     private final UserService userService;
     private final BookingService bookingService;
 
+    @Transactional
     public ItemDto add(int ownerId, ItemDto itemDto) {
         if ((itemDto.getName() == null) || (itemDto.getName().isBlank()) || itemDto.getDescription() == null
                 || itemDto.getDescription().isBlank() || itemDto.getAvailable() == null) {
@@ -41,6 +42,7 @@ public class ItemService {
         return ItemMapper.toItemDto(itemStorage.save(item));
     }
 
+    @Transactional
     public CommentDtoOut addComment(int userId, int itemId, CommentDtoIn commentDtoIn) {
         List<Booking> lastBookingByItemAndUser = bookingService.getLastBookingByItemAndUser(itemId, userId);
         if (lastBookingByItemAndUser.isEmpty()) {
@@ -53,6 +55,7 @@ public class ItemService {
         return CommentMapper.toCommentDtoOut(commentStorage.save(comment));
     }
 
+    @Transactional
     public ItemDto update(int ownerId, int itemId, ItemDto itemDto) {
         Item updatingItem = itemStorage.getReferenceById(itemId);
         if (updatingItem.getOwner().getId() != ownerId) {

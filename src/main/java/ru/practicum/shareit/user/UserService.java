@@ -24,6 +24,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public UserDto save(UserDto userDto) {
         if ((userDto.getName() == null) || (userDto.getName().isBlank()) || userDto.getEmail() == null
                 || userDto.getEmail().isBlank()) {
@@ -32,6 +33,7 @@ public class UserService {
         return UserMapper.toUserDto(userStorage.save(UserMapper.toUser(userDto)));
     }
 
+    @Transactional
     public UserDto update(int userId, UserDto userDto) {
         User updatingUser = userStorage.getReferenceById(userId);
         if (userDto.getEmail() != null && !(userDto.getEmail().isBlank())) {
@@ -56,6 +58,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public void remove(int userId) {
         userStorage.deleteById(userId);
     }
