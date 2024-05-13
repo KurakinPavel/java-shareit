@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,9 +19,6 @@ public class ItemDto {
     @NotNull
     @NotBlank
     protected Boolean available;
-    @NotNull
-    @NotBlank
-    protected Integer requestId;
 
     public ItemDto(Integer id, String name, String description, Boolean available) {
         this.id = id;
