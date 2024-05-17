@@ -1,12 +1,11 @@
 package ru.practicum.shareit.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,13 +17,28 @@ public class ItemRequest {
     @Column(name = "REQUEST_ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
-    @NotBlank
-    @Size(min = 1, max = 500)
     @Column(name = "DESCRIPTION", nullable = false)
     protected String description;
-    @Positive
-    @Column(name = "REQUESTER_ID", nullable = false)
-    protected int requester;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JoinColumn(name = "REQUESTER_ID")
+    protected User requester;
     @Column(name = "CREATED", nullable = false)
     protected LocalDateTime created;
+
+    public ItemRequest(int id, String description, User requester, LocalDateTime created) {
+        this.id = id;
+        this.description = description;
+        this.requester = requester;
+        this.created = created;
+    }
+
+    public ItemRequest(String description, User requester, LocalDateTime created) {
+        this.description = description;
+        this.requester = requester;
+        this.created = created;
+    }
+
+    public ItemRequest() {
+    }
 }
