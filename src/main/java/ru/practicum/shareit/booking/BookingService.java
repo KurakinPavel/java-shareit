@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoForIn;
 import ru.practicum.shareit.booking.dto.BookingDtoForOut;
-import ru.practicum.shareit.exceptions.BookingValidationException;
+import ru.practicum.shareit.exceptions.custom.BookingValidationException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
