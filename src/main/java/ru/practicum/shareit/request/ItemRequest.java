@@ -9,33 +9,33 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "REQUESTS", schema = "PUBLIC")
+@Table(name = "ITEM_REQUESTS", schema = "PUBLIC")
 @Getter
 @Setter
 public class ItemRequest {
     @Id
-    @Column(name = "REQUEST_ID", nullable = false)
+    @Column(name = "ITEM_REQUEST_ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
     @Column(name = "DESCRIPTION", nullable = false)
     protected String description;
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JoinColumn(name = "REQUESTER_ID")
-    protected User requester;
+    @JoinColumn(name = "ITEM_REQUESTER_ID")
+    protected User itemRequester;
     @Column(name = "CREATED", nullable = false)
     protected LocalDateTime created;
 
-    public ItemRequest(int id, String description, User requester, LocalDateTime created) {
+    public ItemRequest(int id, String description, User itemRequester, LocalDateTime created) {
         this.id = id;
         this.description = description;
-        this.requester = requester;
+        this.itemRequester = itemRequester;
         this.created = created;
     }
 
-    public ItemRequest(String description, User requester, LocalDateTime created) {
+    public ItemRequest(String description, User itemRequester, LocalDateTime created) {
         this.description = description;
-        this.requester = requester;
+        this.itemRequester = itemRequester;
         this.created = created;
     }
 

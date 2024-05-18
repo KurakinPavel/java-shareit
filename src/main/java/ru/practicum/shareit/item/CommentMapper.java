@@ -11,7 +11,7 @@ public class CommentMapper {
     public static Comment toComment(CommentDtoIn commentDtoIn, Item item, User author) {
         return new Comment(
                 commentDtoIn.getId() != null ? commentDtoIn.getId() : 0,
-                commentDtoIn.getComment(),
+                commentDtoIn.getText(),
                 item, author, LocalDateTime.now()
         );
     }

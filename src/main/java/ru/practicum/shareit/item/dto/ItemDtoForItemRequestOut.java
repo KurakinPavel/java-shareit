@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
 @AllArgsConstructor
-public class CommentDtoIn {
+public class ItemDtoForItemRequestOut {
     protected Integer id;
-    @NotNull
-    @NotBlank
-    protected String text;
+    protected String name;
+    protected String description;
+    protected Integer requestId;
+    protected Boolean available;
 }

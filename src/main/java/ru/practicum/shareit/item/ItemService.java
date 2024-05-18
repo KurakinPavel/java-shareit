@@ -14,6 +14,8 @@ import ru.practicum.shareit.item.dto.CommentDtoIn;
 import ru.practicum.shareit.item.dto.CommentDtoOut;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookingInformation;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
@@ -30,6 +32,7 @@ public class ItemService {
     private final CommentRepository commentStorage;
     private final UserService userService;
     private final BookingService bookingService;
+    private final ItemRequestService itemRequestService;
 
     @Transactional
     public ItemDto add(int ownerId, ItemDto itemDto) {
@@ -38,7 +41,11 @@ public class ItemService {
             throw new ItemValidationException("Переданы некорректные данные для создания item");
         }
         User owner = userService.getUserForInternalUse(ownerId);
-        Item item = ItemMapper.toItem(itemDto, owner);
+        ItemRequest itemRequest = null;
+        if (itemDto.getRequestId() > 0) {
+            itemRequest = itemRequestService.getItemRequestForInternalUse(itemDto.getRequestId());
+        }
+        Item item = ItemMapper.toItem(itemDto, owner, itemRequest);
         return ItemMapper.toItemDto(itemStorage.save(item));
     }
 

@@ -31,22 +31,24 @@ public class Item {
     protected User owner;
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JoinColumn(name = "REQUEST_ID")
-    protected ItemRequest request;
+    @JoinColumn(name = "ITEM_REQUEST_ID")
+    protected ItemRequest itemRequest;
 
-    public Item(int id, String name, String description, Boolean available, User owner) {
+    public Item(int id, String name, String description, Boolean available, User owner, ItemRequest itemRequest) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
         this.owner = owner;
+        this.itemRequest = itemRequest;
     }
 
-    public Item(String name, String description, Boolean available, User owner) {
+    public Item(String name, String description, Boolean available, User owner, ItemRequest itemRequest) {
         this.name = name;
         this.description = description;
         this.available = available;
         this.owner = owner;
+        this.itemRequest = itemRequest;
     }
 
     public Item() {

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentDtoOut {
     protected int id;
-    protected String comment;
+    protected String text;
     protected String authorName;
     protected LocalDateTime created;
 }
