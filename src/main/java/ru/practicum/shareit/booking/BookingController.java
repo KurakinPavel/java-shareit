@@ -2,8 +2,8 @@ package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDtoForIn;
-import ru.practicum.shareit.booking.dto.BookingDtoForOut;
+import ru.practicum.shareit.booking.model.BookingDtoForIn;
+import ru.practicum.shareit.booking.model.BookingDtoForOut;
 
 import javax.validation.Valid;
 import java.util.List;

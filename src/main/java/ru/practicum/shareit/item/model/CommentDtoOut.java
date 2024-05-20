@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.item.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ItemRequestDtoOut {
+public class CommentDtoOut {
     protected int id;
-    protected String description;
+    protected String text;
+    protected String authorName;
     protected LocalDateTime created;
 }

@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.custom.PaginationParamsValidationException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.item.dto.ItemDtoForItemRequestOut;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.item.model.ItemDtoForItemRequestOut;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequestDtoIn;
+import ru.practicum.shareit.request.model.ItemRequestDtoOut;
+import ru.practicum.shareit.request.model.ItemRequestDtoOutWithItemsInformation;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.UserService;
 
 import java.util.ArrayList;

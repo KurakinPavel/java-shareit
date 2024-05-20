@@ -2,10 +2,10 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.CommentDtoIn;
-import ru.practicum.shareit.item.dto.CommentDtoOut;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoWithBookingInformation;
+import ru.practicum.shareit.item.model.CommentDtoIn;
+import ru.practicum.shareit.item.model.CommentDtoOut;
+import ru.practicum.shareit.item.model.ItemDto;
+import ru.practicum.shareit.item.model.ItemDtoWithBookingInformation;
 
 import javax.validation.Valid;
 import java.util.List;

@@ -1,7 +1,11 @@
 package ru.practicum.shareit.request;
 
-import ru.practicum.shareit.item.dto.ItemDtoForItemRequestOut;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.item.model.ItemDtoForItemRequestOut;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequestDtoIn;
+import ru.practicum.shareit.request.model.ItemRequestDtoOut;
+import ru.practicum.shareit.request.model.ItemRequestDtoOutWithItemsInformation;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;

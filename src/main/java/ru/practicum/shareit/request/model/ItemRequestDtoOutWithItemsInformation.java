@@ -1,9 +1,9 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.request.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.item.dto.ItemDtoForItemRequestOut;
+import ru.practicum.shareit.item.model.ItemDtoForItemRequestOut;
 
 import java.time.LocalDateTime;
 import java.util.List;

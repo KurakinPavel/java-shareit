@@ -1,12 +1,9 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.booking.dto.BookingDtoForItemInformation;
-import ru.practicum.shareit.item.dto.CommentDtoOut;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoForItemRequestOut;
-import ru.practicum.shareit.item.dto.ItemDtoWithBookingInformation;
-import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.booking.model.BookingDtoForItemInformation;
+import ru.practicum.shareit.item.model.*;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.item.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,9 +10,9 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ItemRequestDtoIn {
+public class CommentDtoIn {
     protected Integer id;
     @NotNull
     @NotBlank
-    protected String description;
+    protected String text;
 }
