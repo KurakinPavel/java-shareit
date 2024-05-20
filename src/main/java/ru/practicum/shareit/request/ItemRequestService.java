@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.custom.PaginationParamsValidationException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
@@ -29,12 +30,14 @@ public class ItemRequestService {
     private final UserService userService;
     private final ItemRepository itemStorage;
 
+    @Transactional
     public ItemRequestDtoOut add(int itemRequesterId, ItemRequestDtoIn itemRequestDtoIn) {
         User itemRequester = userService.getUserForInternalUse(itemRequesterId);
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDtoIn, itemRequester);
         return ItemRequestMapper.toItemRequestDtoOut(itemRequestStorage.save(itemRequest));
     }
 
+    @Transactional(readOnly = true)
     public List<ItemRequestDtoOutWithItemsInformation> getAllItemRequestsWithPagination(int itemRequesterId, int from, int size) {
         User itemRequester = userService.getUserForInternalUse(itemRequesterId);
         if (from < 0) {
@@ -58,6 +61,7 @@ public class ItemRequestService {
         return itemRequestsWithItemsInformation;
     }
 
+    @Transactional(readOnly = true)
     public List<ItemRequestDtoOutWithItemsInformation> getItemRequestsOfItemRequester(int itemRequesterId) {
         User itemRequester = userService.getUserForInternalUse(itemRequesterId);
         List<ItemRequest> itemRequestsOfItemRequester = itemRequestStorage.findAllByItemRequester_IdOrderByCreatedDesc(itemRequesterId);
@@ -74,6 +78,7 @@ public class ItemRequestService {
         return itemRequestsWithItemsInformation;
     }
 
+    @Transactional(readOnly = true)
     public ItemRequestDtoOutWithItemsInformation getItemRequestById(int itemRequesterId, int itemRequestId) {
         User itemRequester = userService.getUserForInternalUse(itemRequesterId);
         ItemRequest itemRequest = getItemRequestForInternalUse(itemRequestId);

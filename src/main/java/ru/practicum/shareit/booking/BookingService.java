@@ -76,7 +76,7 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookingDtoForOut> getBookings(int bookerId, String state, Integer from, int size) {
+    public List<BookingDtoForOut> getBookings(int bookerId, String state, int from, int size) {
         User user = userService.getUserForInternalUse(bookerId);
         if (from < 0) {
             throw new PaginationParamsValidationException("Индекс первого элемента не может быть меньше нуля");
