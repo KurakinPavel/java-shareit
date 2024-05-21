@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,5 +24,13 @@ public class UserDto {
         this.id = id;
         this.name = name;
         this.email = email;
+    }
+
+    public UserDto(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    public UserDto() {
     }
 }
