@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class ItemRequestDtoIn {
     protected Integer id;
-    @NotNull
     @NotBlank
+    @Size(min = 20)
     protected String description;
 }
