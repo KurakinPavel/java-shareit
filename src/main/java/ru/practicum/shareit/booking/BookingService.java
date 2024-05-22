@@ -2,15 +2,18 @@ package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.dto.BookingDtoForIn;
-import ru.practicum.shareit.booking.dto.BookingDtoForOut;
-import ru.practicum.shareit.exceptions.BookingValidationException;
-import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.booking.model.*;
+import ru.practicum.shareit.exceptions.custom.BookingValidationException;
+import ru.practicum.shareit.exceptions.custom.PaginationParamsValidationException;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
@@ -73,29 +76,36 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookingDtoForOut> getBookings(int userId, String state) {
-        User user = userService.getUserForInternalUse(userId);
-        List<Booking> bookings;
+    public List<BookingDtoForOut> getBookings(int bookerId, String state, int from, int size) {
+        User user = userService.getUserForInternalUse(bookerId);
+        if (from < 0) {
+            throw new PaginationParamsValidationException("Индекс первого элемента не может быть меньше нуля");
+        }
+        if (size < 1) {
+            throw new PaginationParamsValidationException("Количество отображаемых элементов не может быть меньше одного");
+        }
+        Pageable pageable = PageRequest.of(from / size, size);
+        Page<Booking> bookings;
         if (isPresent(state)) {
             throw new IllegalArgumentException("Unknown state: " + state);
         }
         switch (BookingState.valueOf(state)) {
             case ALL:
-                bookings = bookingStorage.findAllByBooker_IdOrderByStartDesc(userId);
+                bookings = bookingStorage.findAllByBooker_IdOrderByStartDesc(bookerId, pageable);
                 break;
             case CURRENT:
-                bookings = bookingStorage.findAllByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userId,
-                        LocalDateTime.now(), LocalDateTime.now());
+                bookings = bookingStorage.findAllByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(bookerId,
+                        LocalDateTime.now(), LocalDateTime.now(), pageable);
                 break;
             case PAST:
-                bookings = bookingStorage.findAllByBooker_IdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                bookings = bookingStorage.findAllByBooker_IdAndEndIsBeforeOrderByStartDesc(bookerId, LocalDateTime.now(), pageable);
                 break;
             case FUTURE:
-                bookings = bookingStorage.findAllByBooker_IdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now());
+                bookings = bookingStorage.findAllByBooker_IdAndStartIsAfterOrderByStartDesc(bookerId, LocalDateTime.now(), pageable);
                 break;
             case WAITING:
             case REJECTED:
-                bookings = bookingStorage.findAllByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.valueOf(state));
+                bookings = bookingStorage.findAllByBooker_IdAndStatusOrderByStartDesc(bookerId, BookingStatus.valueOf(state), pageable);
                 break;
             default:
                 return new ArrayList<>();
@@ -107,29 +117,36 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookingDtoForOut> getBookingsOfOwnerItems(int ownerId, String state) {
+    public List<BookingDtoForOut> getBookingsOfOwnerItems(int ownerId, String state, int from, int size) {
         User owner = userService.getUserForInternalUse(ownerId);
-        List<Booking> bookings;
+        if (from < 0) {
+            throw new PaginationParamsValidationException("Индекс первого элемента не может быть меньше нуля");
+        }
+        if (size < 1) {
+            throw new PaginationParamsValidationException("Количество отображаемых элементов не может быть меньше одного");
+        }
+        Pageable pageable = PageRequest.of(from / size, size);
+        Page<Booking> bookings;
         if (isPresent(state)) {
             throw new IllegalArgumentException("Unknown state: " + state);
         }
         switch (BookingState.valueOf(state)) {
             case ALL:
-                bookings = bookingStorage.findAllByItem_Owner_IdOrderByStartDesc(ownerId);
+                bookings = bookingStorage.findAllByItem_Owner_IdOrderByStartDesc(ownerId, pageable);
                 break;
             case CURRENT:
                 bookings = bookingStorage.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(ownerId,
-                        LocalDateTime.now(), LocalDateTime.now());
+                        LocalDateTime.now(), LocalDateTime.now(), pageable);
                 break;
             case PAST:
-                bookings = bookingStorage.findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(ownerId, LocalDateTime.now());
+                bookings = bookingStorage.findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(ownerId, LocalDateTime.now(), pageable);
                 break;
             case FUTURE:
-                bookings = bookingStorage.findAllByItem_Owner_IdAndStartIsAfterOrderByStartDesc(ownerId, LocalDateTime.now());
+                bookings = bookingStorage.findAllByItem_Owner_IdAndStartIsAfterOrderByStartDesc(ownerId, LocalDateTime.now(), pageable);
                 break;
             case WAITING:
             case REJECTED:
-                bookings = bookingStorage.findAllByItem_Owner_IdAndStatusOrderByStartDesc(ownerId, BookingStatus.valueOf(state));
+                bookings = bookingStorage.findAllByItem_Owner_IdAndStatusOrderByStartDesc(ownerId, BookingStatus.valueOf(state), pageable);
                 break;
             default:
                 return new ArrayList<>();

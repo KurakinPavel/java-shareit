@@ -2,19 +2,22 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.BookingService;
-import ru.practicum.shareit.booking.dto.BookingDtoForItemInformation;
+import ru.practicum.shareit.booking.model.BookingDtoForItemInformation;
 import ru.practicum.shareit.booking.BookingMapper;
-import ru.practicum.shareit.exceptions.CommentValidationException;
-import ru.practicum.shareit.exceptions.ItemValidationException;
-import ru.practicum.shareit.item.dto.CommentDtoIn;
-import ru.practicum.shareit.item.dto.CommentDtoOut;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoWithBookingInformation;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.exceptions.custom.CommentValidationException;
+import ru.practicum.shareit.exceptions.custom.ItemValidationException;
+import ru.practicum.shareit.exceptions.custom.PaginationParamsValidationException;
+import ru.practicum.shareit.item.model.*;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestService;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.UserService;
 
 import java.util.ArrayList;
@@ -30,6 +33,7 @@ public class ItemService {
     private final CommentRepository commentStorage;
     private final UserService userService;
     private final BookingService bookingService;
+    private final ItemRequestService itemRequestService;
 
     @Transactional
     public ItemDto add(int ownerId, ItemDto itemDto) {
@@ -38,7 +42,11 @@ public class ItemService {
             throw new ItemValidationException("Переданы некорректные данные для создания item");
         }
         User owner = userService.getUserForInternalUse(ownerId);
-        Item item = ItemMapper.toItem(itemDto, owner);
+        ItemRequest itemRequest = null;
+        if (itemDto.getRequestId() > 0) {
+            itemRequest = itemRequestService.getItemRequestForInternalUse(itemDto.getRequestId());
+        }
+        Item item = ItemMapper.toItem(itemDto, owner, itemRequest);
         return ItemMapper.toItemDto(itemStorage.save(item));
     }
 
@@ -109,8 +117,15 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemDtoWithBookingInformation> getItemsOfOwner(int ownerId) {
-        List<Item> itemsOfOwner = itemStorage.findAllByOwnerId(ownerId);
+    public List<ItemDtoWithBookingInformation> getItemsOfOwner(int ownerId, int from, int size) {
+        if (from < 0) {
+            throw new PaginationParamsValidationException("Индекс первого элемента не может быть меньше нуля");
+        }
+        if (size < 1) {
+            throw new PaginationParamsValidationException("Количество отображаемых элементов не может быть меньше одного");
+        }
+        Pageable pageable = PageRequest.of(from / size, size);
+        Page<Item> itemsOfOwner = itemStorage.findAllByOwnerId(ownerId, pageable);
         List<ItemDtoWithBookingInformation> itemsWithBookingInformation = new ArrayList<>();
         for (Item item : itemsOfOwner) {
             List<CommentDtoOut> comments = commentStorage.findAllByItemId(item.getId())
@@ -149,11 +164,18 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemDto> getItemsForRent(String text) {
+    public List<ItemDto> getItemsForRent(String text, int from, int size) {
+        if (from < 0) {
+            throw new PaginationParamsValidationException("Индекс первого элемента не может быть меньше нуля");
+        }
+        if (size < 1) {
+            throw new PaginationParamsValidationException("Количество отображаемых элементов не может быть меньше одного");
+        }
+        Pageable pageable = PageRequest.of(from / size, size);
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
-        return itemStorage.search(text)
+        return itemStorage.search(text, pageable)
                 .stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());

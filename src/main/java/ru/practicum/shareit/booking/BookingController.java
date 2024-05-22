@@ -2,8 +2,8 @@ package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDtoForIn;
-import ru.practicum.shareit.booking.dto.BookingDtoForOut;
+import ru.practicum.shareit.booking.model.BookingDtoForIn;
+import ru.practicum.shareit.booking.model.BookingDtoForOut;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -38,14 +38,18 @@ public class BookingController {
     @GetMapping
     public List<BookingDtoForOut> getBookings(
             @RequestHeader("X-Sharer-User-Id") Integer userId,
-            @RequestParam(defaultValue = "ALL") String state) {
-        return bookingService.getBookings(userId, state);
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0") Integer from,
+            @RequestParam(defaultValue = "20") Integer size) {
+        return bookingService.getBookings(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingDtoForOut> getBookingsOfOwnerItems(
             @RequestHeader("X-Sharer-User-Id") Integer ownerId,
-            @RequestParam(defaultValue = "ALL") String state) {
-        return bookingService.getBookingsOfOwnerItems(ownerId, state);
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0") Integer from,
+            @RequestParam(defaultValue = "20") Integer size) {
+        return bookingService.getBookingsOfOwnerItems(ownerId, state, from, size);
     }
 }

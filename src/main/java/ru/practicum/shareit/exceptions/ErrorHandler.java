@@ -7,6 +7,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.exceptions.custom.BookingValidationException;
+import ru.practicum.shareit.exceptions.custom.CommentValidationException;
+import ru.practicum.shareit.exceptions.custom.ItemValidationException;
+import ru.practicum.shareit.exceptions.custom.UserValidationException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.NoSuchElementException;

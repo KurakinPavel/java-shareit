@@ -2,10 +2,10 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.CommentDtoIn;
-import ru.practicum.shareit.item.dto.CommentDtoOut;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoWithBookingInformation;
+import ru.practicum.shareit.item.model.CommentDtoIn;
+import ru.practicum.shareit.item.model.CommentDtoOut;
+import ru.practicum.shareit.item.model.ItemDto;
+import ru.practicum.shareit.item.model.ItemDtoWithBookingInformation;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -43,12 +43,16 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDtoWithBookingInformation> getItemsOfOwner(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
-        return itemService.getItemsOfOwner(ownerId);
+    public List<ItemDtoWithBookingInformation> getItemsOfOwner(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
+                                                               @RequestParam(defaultValue = "0") Integer from,
+                                                               @RequestParam(defaultValue = "20") Integer size) {
+        return itemService.getItemsOfOwner(ownerId, from, size);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> getItemsForRent(@RequestParam String text) {
-        return itemService.getItemsForRent(text);
+    public List<ItemDto> getItemsForRent(@RequestParam String text,
+                                         @RequestParam(defaultValue = "0") Integer from,
+                                         @RequestParam(defaultValue = "20") Integer size) {
+        return itemService.getItemsForRent(text, from, size);
     }
 }

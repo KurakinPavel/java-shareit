@@ -1,4 +1,4 @@
-package ru.practicum.shareit.exceptions;
+package ru.practicum.shareit.exceptions.custom;
 
 public class UserValidationException extends RuntimeException {
     public UserValidationException(final String message) {
