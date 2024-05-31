@@ -13,7 +13,6 @@ import ru.practicum.shareit.booking.model.BookingDtoForItemInformation;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.exceptions.custom.CommentValidationException;
 import ru.practicum.shareit.exceptions.custom.ItemValidationException;
-import ru.practicum.shareit.exceptions.custom.PaginationParamsValidationException;
 import ru.practicum.shareit.item.model.*;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestService;

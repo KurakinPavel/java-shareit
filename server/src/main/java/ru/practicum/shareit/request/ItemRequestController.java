@@ -40,5 +40,4 @@ public class ItemRequestController {
             @PathVariable Integer requestId) {
         return itemRequestService.getItemRequestById(itemRequesterId, requestId);
     }
-
 }
