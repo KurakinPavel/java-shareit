@@ -119,7 +119,7 @@ public class ItemService {
     @Transactional(readOnly = true)
     public List<ItemDtoWithBookingInformation> getItemsOfOwner(int ownerId, int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        Page<Item> itemsOfOwner = itemStorage.findAllByOwnerId(ownerId, pageable);
+        Page<Item> itemsOfOwner = itemStorage.findAllByOwnerIdOrderById(ownerId, pageable);
         List<ItemDtoWithBookingInformation> itemsWithBookingInformation = new ArrayList<>();
         for (Item item : itemsOfOwner) {
             List<CommentDtoOut> comments = commentStorage.findAllByItemId(item.getId())

@@ -10,6 +10,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.client.BaseClient;
+import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.Map;
 
@@ -27,20 +28,37 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getBookings(long userId, BookingState state, Integer from, Integer size) {
+    public ResponseEntity<Object> getBookings(int userId, BookingState state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,
                 "size", size
         );
-        return get("?state={state}&from={from}&size={size}", userId, parameters);
+        return get("?state={state}&from={from}&size={size}", (long) userId, parameters);
     }
 
     public ResponseEntity<Object> bookItem(int userId, BookItemRequestDto requestDto) {
         return post("", userId, requestDto);
     }
 
-    public ResponseEntity<Object> getBooking(int userId, Integer bookingId) {
+    public ResponseEntity<Object> getBooking(int userId, int bookingId) {
         return get("/" + bookingId, userId);
+    }
+
+    public ResponseEntity<Object> confirm(int ownerId, int bookingId, Boolean approved) {
+        Map<String, Object> parameters = Map.of(
+                "approved", String.valueOf(approved)
+        );
+        System.out.println(parameters.get("approved"));
+        return patch("/" + bookingId + "?approved={approved}", ownerId, parameters);
+    }
+
+    public ResponseEntity<Object> getBookingsOfOwnerItems(int userId, BookingState state, Integer from, Integer size) {
+        Map<String, Object> parameters = Map.of(
+                "state", state.name(),
+                "from", from,
+                "size", size
+        );
+        return get("/owner?state={state}&from={from}&size={size}", (long) userId, parameters);
     }
 }
