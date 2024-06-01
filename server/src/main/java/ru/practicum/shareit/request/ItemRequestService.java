@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exceptions.custom.PaginationParamsValidationException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.ItemDtoForItemRequestOut;
@@ -40,12 +39,6 @@ public class ItemRequestService {
     @Transactional(readOnly = true)
     public List<ItemRequestDtoOutWithItemsInformation> getAllItemRequestsWithPagination(int itemRequesterId, int from, int size) {
         User itemRequester = userService.getUserForInternalUse(itemRequesterId);
-        if (from < 0) {
-            throw new PaginationParamsValidationException("Индекс первого элемента не может быть меньше нуля");
-        }
-        if (size < 1) {
-            throw new PaginationParamsValidationException("Количество отображаемых элементов не может быть меньше одного");
-        }
         Pageable pageable = PageRequest.of(from / size, size);
         Page<ItemRequest> itemRequestsOfItemRequester = itemRequestStorage.findAllByItemRequester_IdNotOrderByCreatedDesc(itemRequesterId, pageable);
         List<ItemRequestDtoOutWithItemsInformation> itemRequestsWithItemsInformation = new ArrayList<>();

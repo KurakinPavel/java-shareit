@@ -6,10 +6,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exceptions.custom.BookingValidationException;
-import ru.practicum.shareit.exceptions.custom.CommentValidationException;
-import ru.practicum.shareit.exceptions.custom.ItemValidationException;
-import ru.practicum.shareit.exceptions.custom.UserValidationException;
 
 import java.util.NoSuchElementException;
 
@@ -19,35 +15,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleCommentValidationException(final CommentValidationException e) {
-        log.info(e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleItemValidationException(final ItemValidationException e) {
-        log.info(e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumentException(final IllegalArgumentException e) {
-        log.info(e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleBookingValidationException(final BookingValidationException e) {
-        log.info(e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleUserValidationException(final UserValidationException e) {
         log.info(e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
@@ -65,20 +33,6 @@ public class ErrorHandler {
         log.info(e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
-
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    public ErrorResponse handleConstraintViolationException(final ConstraintViolationException e) {
-//        log.info(e.getMessage(), e);
-//        return new ErrorResponse(e.getMessage());
-//    }
-//
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    public ErrorResponse handleEntityNotFoundException(final EntityNotFoundException e) {
-//        log.info(e.getMessage(), e);
-//        return new ErrorResponse(e.getMessage());
-//    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
