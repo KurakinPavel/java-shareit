@@ -31,10 +31,6 @@ public class BookingService {
 
     @Transactional
     public BookingDtoForOut add(int bookerId, BookingDtoForIn bookingDtoForIn) {
-        if (bookingDtoForIn.getStart() == null || bookingDtoForIn.getEnd() == null || bookingDtoForIn.getStart().isAfter(bookingDtoForIn.getEnd())
-                || bookingDtoForIn.getStart().equals(bookingDtoForIn.getEnd())) {
-            throw new BookingValidationException("Переданы некорректные данные для создания бронирования");
-        }
         User booker = userService.getUserForInternalUse(bookerId);
         Item item = getItemForInternalUse(bookingDtoForIn.getItemId());
         if (item.getOwner().getId() == bookerId) {
