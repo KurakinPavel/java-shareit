@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.*;
 import ru.practicum.shareit.exceptions.custom.BookingValidationException;
-import ru.practicum.shareit.exceptions.custom.PaginationParamsValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
@@ -78,17 +77,8 @@ public class BookingService {
     @Transactional(readOnly = true)
     public List<BookingDtoForOut> getBookings(int bookerId, String state, int from, int size) {
         User user = userService.getUserForInternalUse(bookerId);
-        if (from < 0) {
-            throw new PaginationParamsValidationException("Индекс первого элемента не может быть меньше нуля");
-        }
-        if (size < 1) {
-            throw new PaginationParamsValidationException("Количество отображаемых элементов не может быть меньше одного");
-        }
         Pageable pageable = PageRequest.of(from / size, size);
         Page<Booking> bookings;
-        if (isPresent(state)) {
-            throw new IllegalArgumentException("Unknown state: " + state);
-        }
         switch (BookingState.valueOf(state)) {
             case ALL:
                 bookings = bookingStorage.findAllByBooker_IdOrderByStartDesc(bookerId, pageable);
@@ -119,17 +109,8 @@ public class BookingService {
     @Transactional(readOnly = true)
     public List<BookingDtoForOut> getBookingsOfOwnerItems(int ownerId, String state, int from, int size) {
         User owner = userService.getUserForInternalUse(ownerId);
-        if (from < 0) {
-            throw new PaginationParamsValidationException("Индекс первого элемента не может быть меньше нуля");
-        }
-        if (size < 1) {
-            throw new PaginationParamsValidationException("Количество отображаемых элементов не может быть меньше одного");
-        }
         Pageable pageable = PageRequest.of(from / size, size);
         Page<Booking> bookings;
-        if (isPresent(state)) {
-            throw new IllegalArgumentException("Unknown state: " + state);
-        }
         switch (BookingState.valueOf(state)) {
             case ALL:
                 bookings = bookingStorage.findAllByItem_Owner_IdOrderByStartDesc(ownerId, pageable);
@@ -173,14 +154,5 @@ public class BookingService {
         Item item = itemStorage.getReferenceById(id);
         ItemMapper.toItemDto(item);
         return item;
-    }
-
-    private static boolean isPresent(String data) {
-        try {
-            Enum.valueOf(BookingState.class, data);
-            return false;
-        } catch (IllegalArgumentException e) {
-            return true;
-        }
     }
 }
