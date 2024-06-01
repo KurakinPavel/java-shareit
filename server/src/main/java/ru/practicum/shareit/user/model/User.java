@@ -31,7 +31,8 @@ public class User {
           this.email = email;
      }
 
-     public User() {}
+     public User() {
+     }
 
      @Override
      public boolean equals(Object object) {
