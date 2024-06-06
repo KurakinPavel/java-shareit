@@ -16,8 +16,9 @@ import ru.practicum.shareit.exceptions.custom.ItemValidationException;
 import ru.practicum.shareit.item.model.*;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestService;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 public class ItemService {
     private final ItemRepository itemStorage;
     private final CommentRepository commentStorage;
-    private final UserService userService;
+    private final UserRepository userStorage;
     private final BookingService bookingService;
     private final ItemRequestService itemRequestService;
 
@@ -40,7 +41,8 @@ public class ItemService {
                 || itemDto.getDescription().isBlank() || itemDto.getAvailable() == null) {
             throw new ItemValidationException("Переданы некорректные данные для создания item");
         }
-        User owner = userService.getUserForInternalUse(ownerId);
+        User owner = userStorage.getReferenceById(ownerId);
+        UserMapper.toUserDto(owner);
         ItemRequest itemRequest = null;
         if (itemDto.getRequestId() > 0) {
             itemRequest = itemRequestService.getItemRequestForInternalUse(itemDto.getRequestId());
@@ -57,7 +59,7 @@ public class ItemService {
                     " пользователем с id " + userId + " не найдены. Добавление комментария отклонено.");
         }
         Item item = itemStorage.getReferenceById(itemId);
-        User author = userService.getUserForInternalUse(userId);
+        User author = userStorage.getReferenceById(userId);
         Comment comment = CommentMapper.toComment(commentDtoIn, item, author);
         return CommentMapper.toCommentDtoOut(commentStorage.save(comment));
     }
