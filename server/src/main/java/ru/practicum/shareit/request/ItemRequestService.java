@@ -79,17 +79,12 @@ public class ItemRequestService {
     public ItemRequestDtoOutWithItemsInformation getItemRequestById(int itemRequesterId, int itemRequestId) {
         User itemRequester = userStorage.getReferenceById(itemRequesterId);
         UserMapper.toUserDto(itemRequester);
-        ItemRequest itemRequest = getItemRequestForInternalUse(itemRequestId);
+        ItemRequest itemRequest = itemRequestStorage.getReferenceById(itemRequestId);
+        ItemRequestMapper.toItemRequestDtoOut(itemRequest);
         List<ItemDtoForItemRequestOut> items = itemStorage.findAllByItemRequest_Id(itemRequestId)
                 .stream()
                 .map(ItemMapper::toItemDtoForItemRequestOut)
                 .collect(Collectors.toList());
         return ItemRequestMapper.toItemRequestDtoOutWithItemsInformation(itemRequest, items);
-    }
-
-    public ItemRequest getItemRequestForInternalUse(int id) {
-        ItemRequest itemRequest = itemRequestStorage.getReferenceById(id);
-        ItemRequestMapper.toItemRequestDtoOut(itemRequest);
-        return itemRequest;
     }
 }

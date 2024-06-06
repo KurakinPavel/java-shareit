@@ -34,7 +34,8 @@ public class BookingService {
     public BookingDtoForOut add(int bookerId, BookingDtoForIn bookingDtoForIn) {
         User booker = userStorage.getReferenceById(bookerId);
         UserMapper.toUserDto(booker);
-        Item item = getItemForInternalUse(bookingDtoForIn.getItemId());
+        Item item = itemStorage.getReferenceById(bookingDtoForIn.getItemId());
+        ItemMapper.toItemDto(item);
         if (item.getOwner().getId() == bookerId) {
             throw new NoSuchElementException("Владелец не может бронировать свои вещи");
         }
@@ -137,23 +138,5 @@ public class BookingService {
                 .stream()
                 .map(BookingMapper::toBookingDtoForOut)
                 .collect(Collectors.toList());
-    }
-
-    public List<Booking> getLastBookingByItemAndUser(int itemId, int userId) {
-        return bookingStorage.findFirst1ByItemIdAndBookerIdAndEndIsBeforeOrderByEndDesc(itemId, userId, LocalDateTime.now());
-    }
-
-    public List<Booking> getLastBookingByItem(int itemId) {
-        return bookingStorage.findFirst1ByItemIdAndStartIsBeforeOrderByStartDesc(itemId, LocalDateTime.now());
-    }
-
-    public List<Booking> getNextBookingByItem(int itemId) {
-        return bookingStorage.findFirst1ByItemIdAndStartIsAfterOrderByStartAsc(itemId, LocalDateTime.now());
-    }
-
-    private Item getItemForInternalUse(int id) {
-        Item item = itemStorage.getReferenceById(id);
-        ItemMapper.toItemDto(item);
-        return item;
     }
 }

@@ -7,19 +7,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.model.BookingDtoForItemInformation;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.exceptions.custom.CommentValidationException;
 import ru.practicum.shareit.exceptions.custom.ItemValidationException;
 import ru.practicum.shareit.item.model.*;
+import ru.practicum.shareit.request.ItemRequestMapper;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.request.ItemRequestService;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,8 +34,8 @@ public class ItemService {
     private final ItemRepository itemStorage;
     private final CommentRepository commentStorage;
     private final UserRepository userStorage;
-    private final BookingService bookingService;
-    private final ItemRequestService itemRequestService;
+    private final BookingRepository bookingStorage;
+    private final ItemRequestRepository itemRequestStorage;
 
     @Transactional
     public ItemDto add(int ownerId, ItemDto itemDto) {
@@ -45,7 +47,8 @@ public class ItemService {
         UserMapper.toUserDto(owner);
         ItemRequest itemRequest = null;
         if (itemDto.getRequestId() > 0) {
-            itemRequest = itemRequestService.getItemRequestForInternalUse(itemDto.getRequestId());
+            itemRequest = itemRequestStorage.getReferenceById(itemDto.getRequestId());
+            ItemRequestMapper.toItemRequestDtoOut(itemRequest);
         }
         Item item = ItemMapper.toItem(itemDto, owner, itemRequest);
         return ItemMapper.toItemDto(itemStorage.save(item));
@@ -53,7 +56,8 @@ public class ItemService {
 
     @Transactional
     public CommentDtoOut addComment(int userId, int itemId, CommentDtoIn commentDtoIn) {
-        List<Booking> lastBookingByItemAndUser = bookingService.getLastBookingByItemAndUser(itemId, userId);
+        List<Booking> lastBookingByItemAndUser = bookingStorage.findFirst1ByItemIdAndBookerIdAndEndIsBeforeOrderByEndDesc(
+                itemId, userId, LocalDateTime.now());
         if (lastBookingByItemAndUser.isEmpty()) {
             throw new CommentValidationException("Данные об аренде item с id " + itemId +
                     " пользователем с id " + userId + " не найдены. Добавление комментария отклонено.");
@@ -93,13 +97,15 @@ public class ItemService {
             return ItemMapper.toItemDtoWithBookingInformation(item, null, null, comments);
         } else {
             List<Booking> bookings = new ArrayList<>();
-            List<Booking> lastBookingByItem = bookingService.getLastBookingByItem(item.getId());
+            List<Booking> lastBookingByItem = bookingStorage.findFirst1ByItemIdAndStartIsBeforeOrderByStartDesc(
+                    item.getId(), LocalDateTime.now());
             if (!lastBookingByItem.isEmpty()) {
                 bookings.add(lastBookingByItem.get(0));
             } else {
                 return ItemMapper.toItemDtoWithBookingInformation(item, null, null, comments);
             }
-            List<Booking> nextBookingByItem = bookingService.getNextBookingByItem(item.getId());
+            List<Booking> nextBookingByItem = bookingStorage.findFirst1ByItemIdAndStartIsAfterOrderByStartAsc(
+                    item.getId(), LocalDateTime.now());
             if (!nextBookingByItem.isEmpty()) {
                 bookings.add(nextBookingByItem.get(0));
             }
@@ -128,7 +134,8 @@ public class ItemService {
                     .map(CommentMapper::toCommentDtoOut)
                     .collect(Collectors.toList());
             List<Booking> bookings = new ArrayList<>();
-            List<Booking> lastBookingByItem = bookingService.getLastBookingByItem(item.getId());
+            List<Booking> lastBookingByItem = bookingStorage.findFirst1ByItemIdAndStartIsBeforeOrderByStartDesc(
+                    item.getId(), LocalDateTime.now());
             if (!lastBookingByItem.isEmpty()) {
                 bookings.add(lastBookingByItem.get(0));
             } else {
@@ -137,7 +144,8 @@ public class ItemService {
                 itemsWithBookingInformation.add(itemDtoWithBookingInformation);
                 continue;
             }
-            List<Booking> nextBookingByItem = bookingService.getNextBookingByItem(item.getId());
+            List<Booking> nextBookingByItem = bookingStorage.findFirst1ByItemIdAndStartIsAfterOrderByStartAsc(
+                    item.getId(), LocalDateTime.now());
             if (!nextBookingByItem.isEmpty()) {
                 bookings.add(nextBookingByItem.get(0));
             }
