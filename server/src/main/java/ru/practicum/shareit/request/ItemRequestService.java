@@ -14,8 +14,9 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.model.ItemRequestDtoIn;
 import ru.practicum.shareit.request.model.ItemRequestDtoOut;
 import ru.practicum.shareit.request.model.ItemRequestDtoOutWithItemsInformation;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,19 +27,21 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemRequestService {
     private final ItemRequestRepository itemRequestStorage;
-    private final UserService userService;
+    private final UserRepository userStorage;
     private final ItemRepository itemStorage;
 
     @Transactional
     public ItemRequestDtoOut add(int itemRequesterId, ItemRequestDtoIn itemRequestDtoIn) {
-        User itemRequester = userService.getUserForInternalUse(itemRequesterId);
+        User itemRequester = userStorage.getReferenceById(itemRequesterId);
+        UserMapper.toUserDto(itemRequester);
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDtoIn, itemRequester);
         return ItemRequestMapper.toItemRequestDtoOut(itemRequestStorage.save(itemRequest));
     }
 
     @Transactional(readOnly = true)
     public List<ItemRequestDtoOutWithItemsInformation> getAllItemRequestsWithPagination(int itemRequesterId, int from, int size) {
-        User itemRequester = userService.getUserForInternalUse(itemRequesterId);
+        User itemRequester = userStorage.getReferenceById(itemRequesterId);
+        UserMapper.toUserDto(itemRequester);
         Pageable pageable = PageRequest.of(from / size, size);
         Page<ItemRequest> itemRequestsOfItemRequester = itemRequestStorage.findAllByItemRequester_IdNotOrderByCreatedDesc(itemRequesterId, pageable);
         List<ItemRequestDtoOutWithItemsInformation> itemRequestsWithItemsInformation = new ArrayList<>();
@@ -56,7 +59,8 @@ public class ItemRequestService {
 
     @Transactional(readOnly = true)
     public List<ItemRequestDtoOutWithItemsInformation> getItemRequestsOfItemRequester(int itemRequesterId) {
-        User itemRequester = userService.getUserForInternalUse(itemRequesterId);
+        User itemRequester = userStorage.getReferenceById(itemRequesterId);
+        UserMapper.toUserDto(itemRequester);
         List<ItemRequest> itemRequestsOfItemRequester = itemRequestStorage.findAllByItemRequester_IdOrderByCreatedDesc(itemRequesterId);
         List<ItemRequestDtoOutWithItemsInformation> itemRequestsWithItemsInformation = new ArrayList<>();
         for (ItemRequest itemRequest : itemRequestsOfItemRequester) {
@@ -73,18 +77,14 @@ public class ItemRequestService {
 
     @Transactional(readOnly = true)
     public ItemRequestDtoOutWithItemsInformation getItemRequestById(int itemRequesterId, int itemRequestId) {
-        User itemRequester = userService.getUserForInternalUse(itemRequesterId);
-        ItemRequest itemRequest = getItemRequestForInternalUse(itemRequestId);
+        User itemRequester = userStorage.getReferenceById(itemRequesterId);
+        UserMapper.toUserDto(itemRequester);
+        ItemRequest itemRequest = itemRequestStorage.getReferenceById(itemRequestId);
+        ItemRequestMapper.toItemRequestDtoOut(itemRequest);
         List<ItemDtoForItemRequestOut> items = itemStorage.findAllByItemRequest_Id(itemRequestId)
                 .stream()
                 .map(ItemMapper::toItemDtoForItemRequestOut)
                 .collect(Collectors.toList());
         return ItemRequestMapper.toItemRequestDtoOutWithItemsInformation(itemRequest, items);
-    }
-
-    public ItemRequest getItemRequestForInternalUse(int id) {
-        ItemRequest itemRequest = itemRequestStorage.getReferenceById(id);
-        ItemRequestMapper.toItemRequestDtoOut(itemRequest);
-        return itemRequest;
     }
 }

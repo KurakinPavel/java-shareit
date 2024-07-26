@@ -53,12 +53,6 @@ public class UserService {
         return UserMapper.toUserDto(userStorage.getReferenceById(id));
     }
 
-    public User getUserForInternalUse(int id) {
-        User user = userStorage.getReferenceById(id);
-        UserMapper.toUserDto(user);
-        return user;
-    }
-
     @Transactional
     public void remove(int userId) {
         userStorage.deleteById(userId);

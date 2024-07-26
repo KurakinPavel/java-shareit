@@ -12,8 +12,9 @@ import ru.practicum.shareit.exceptions.custom.BookingValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,12 +28,14 @@ import java.util.stream.Collectors;
 public class BookingService {
     private final BookingRepository bookingStorage;
     private final ItemRepository itemStorage;
-    private final UserService userService;
+    private final UserRepository userStorage;
 
     @Transactional
     public BookingDtoForOut add(int bookerId, BookingDtoForIn bookingDtoForIn) {
-        User booker = userService.getUserForInternalUse(bookerId);
-        Item item = getItemForInternalUse(bookingDtoForIn.getItemId());
+        User booker = userStorage.getReferenceById(bookerId);
+        UserMapper.toUserDto(booker);
+        Item item = itemStorage.getReferenceById(bookingDtoForIn.getItemId());
+        ItemMapper.toItemDto(item);
         if (item.getOwner().getId() == bookerId) {
             throw new NoSuchElementException("Владелец не может бронировать свои вещи");
         }
@@ -62,7 +65,8 @@ public class BookingService {
 
     @Transactional(readOnly = true)
     public BookingDtoForOut getBooking(int userId, int bookingId) {
-        User user = userService.getUserForInternalUse(userId);
+        User user = userStorage.getReferenceById(userId);
+        UserMapper.toUserDto(user);
         Booking booking = bookingStorage.getReferenceById(bookingId);
         if (!(booking.getItem().getOwner().getId() == userId || booking.getBooker().getId() == userId)) {
             throw new NoSuchElementException("У пользователя нет ни вещей, ни бронирований");
@@ -72,7 +76,8 @@ public class BookingService {
 
     @Transactional(readOnly = true)
     public List<BookingDtoForOut> getBookings(int bookerId, String state, int from, int size) {
-        User user = userService.getUserForInternalUse(bookerId);
+        User user = userStorage.getReferenceById(bookerId);
+        UserMapper.toUserDto(user);
         Pageable pageable = PageRequest.of(from / size, size);
         Page<Booking> bookings;
         switch (BookingState.valueOf(state)) {
@@ -104,7 +109,8 @@ public class BookingService {
 
     @Transactional(readOnly = true)
     public List<BookingDtoForOut> getBookingsOfOwnerItems(int ownerId, String state, int from, int size) {
-        User owner = userService.getUserForInternalUse(ownerId);
+        User owner = userStorage.getReferenceById(ownerId);
+        UserMapper.toUserDto(owner);
         Pageable pageable = PageRequest.of(from / size, size);
         Page<Booking> bookings;
         switch (BookingState.valueOf(state)) {
@@ -132,23 +138,5 @@ public class BookingService {
                 .stream()
                 .map(BookingMapper::toBookingDtoForOut)
                 .collect(Collectors.toList());
-    }
-
-    public List<Booking> getLastBookingByItemAndUser(int itemId, int userId) {
-        return bookingStorage.findFirst1ByItemIdAndBookerIdAndEndIsBeforeOrderByEndDesc(itemId, userId, LocalDateTime.now());
-    }
-
-    public List<Booking> getLastBookingByItem(int itemId) {
-        return bookingStorage.findFirst1ByItemIdAndStartIsBeforeOrderByStartDesc(itemId, LocalDateTime.now());
-    }
-
-    public List<Booking> getNextBookingByItem(int itemId) {
-        return bookingStorage.findFirst1ByItemIdAndStartIsAfterOrderByStartAsc(itemId, LocalDateTime.now());
-    }
-
-    private Item getItemForInternalUse(int id) {
-        Item item = itemStorage.getReferenceById(id);
-        ItemMapper.toItemDto(item);
-        return item;
     }
 }
